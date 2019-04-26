@@ -248,6 +248,7 @@ select
 	inner join Library_Branch a2 on a2.BranchID = a3.BranchID
 where a1.Title like @Title + '%'
 and a2.BranchName = isnull(@Branch,a2.BranchName)
+go
 
 exec BookCount @Title = 'The Lost Tribe', @Branch = 'Sharpstown'
 
@@ -262,8 +263,8 @@ as
 select a1.Name from Borrower a1
 	full outer join Book_Loans a2 on a2.CardNo = a1.CardNo
 	where a2.BookID IS NULL
-exec SeeNoLoans
 go
+exec SeeNoLoans
 
 -- Stored Procedure #4
 -- First, changing some dates so there will be some results for this procedure
@@ -281,10 +282,9 @@ select
 	inner join Library_Branch a0 on a0.BranchID = a3.BranchID
 where a3.DateDue = @TodayDate
 and a0.BranchName = ISNULL(@Branch,a0.BranchName)
-
+go
 exec DueToday @Branch = 'Sharpstown'
 ;
-go
 
 -- Stored Procedure #5
 create proc dbo.LoansByBranch
@@ -293,8 +293,8 @@ select a1.BranchName as 'Branch', count(BookID) as 'Total Loans'
 	from Book_Loans a2 
 	inner join Library_Branch a1 on a1.BranchID = a2.BranchID
 	group by a1.BranchName
-exec LoansByBranch
 go
+exec LoansByBranch
 
 -- Stored Procedure #6
 create proc dbo.LotsOfLoans
@@ -306,8 +306,8 @@ select
 	group by a2.Name, a2.Address
 	having count(BookID) >= 5
 	order by count(BookID) desc;
-exec LotsOfLoans
 go
+exec LotsOfLoans
 
 -- Stored Procedure #7
 create proc dbo.StephenKing
@@ -320,8 +320,8 @@ select
 	inner join Library_Branch a4 on a4.BranchID = a3.BranchID
 where a2.AuthorName = 'Stephen King'
 and a4.BranchName = 'Central'
-exec StephenKing
 go
+exec StephenKing
 	--OR, if I wanted it to be more useful --
 create proc dbo.AuthorCopiesByBranch @Branch varchar(50)=null, @Author varchar(50)=null
 as
@@ -333,5 +333,5 @@ select
 	inner join Library_Branch a4 on a4.BranchID = a3.BranchID
 where a2.AuthorName like '%' + @Author + '%'
 and a4.BranchName like @Branch + '%'
-
+go
 exec AuthorCopiesByBranch @Branch = 'Centr', @Author = ' King'
